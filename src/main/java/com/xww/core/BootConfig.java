@@ -1,4 +1,4 @@
-package com.xww.bot;
+package com.xww.core;
 
 public class BootConfig {
     private String Wsurl;
@@ -14,7 +14,7 @@ public class BootConfig {
         Httptoken = "";
     }
 
-    public String Wsurl() {
+    public String getWsurl() {
         return Wsurl;
     }
 
@@ -23,7 +23,7 @@ public class BootConfig {
         return this;
     }
 
-    public String Wstoken() {
+    public String getWstoken() {
         return Wstoken;
     }
 
@@ -32,7 +32,7 @@ public class BootConfig {
         return this;
     }
 
-    public String Httpurl() {
+    public String getHttpurl() {
         return Httpurl;
     }
 
@@ -41,7 +41,7 @@ public class BootConfig {
         return this;
     }
 
-    public String Httptoken() {
+    public String getHttptoken() {
         return Httptoken;
     }
 

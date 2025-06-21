@@ -1,5 +1,6 @@
 package com.xww.event;
 
+import com.xww.core.BasePlugins;
 import com.xww.model.Message;
 import com.xww.model.Plugins;
 
@@ -9,15 +10,14 @@ import java.util.Set;
 import java.util.concurrent.*;
 
 public class Event {
-    private static Set<Plugins> plugins;
-    // 线程池（建议复用，避免频繁创建）
+    private static Set<BasePlugins> plugins;
     private static final ExecutorService PLUGIN_EXECUTOR = Executors.newFixedThreadPool(
-            Runtime.getRuntime().availableProcessors() * 2, // 根据 CPU 核心数调整
-            r -> new Thread(r, "Plugin-Executor-" + r.hashCode()) // 自定义线程名
+            Runtime.getRuntime().availableProcessors() * 2,
+            r -> new Thread(r, "Plugin-Executor-" + r.hashCode())
     );
     private static final ScheduledExecutorService SCHEDULER = Executors.newScheduledThreadPool(10);
 
-    public static void PostEvent(Set<Plugins> Plugins, LinkedBlockingQueue<Message> MessageQueue) {
+    public static void PostEvent(Set<BasePlugins> Plugins, LinkedBlockingQueue<Message> MessageQueue) {
         plugins = Plugins;
         for (; ; ) {
             try {
@@ -66,11 +66,6 @@ public class Event {
         }, timeoutSeconds, TimeUnit.SECONDS);
     }
 
-    /**
-     * 取消所有未完成的插件任务
-     *
-     * @param futures 任务 Future 列表
-     */
     private static void cancelPendingTasks(List<Future<?>> futures) {
         for (Future<?> future : futures) {
             if (!future.isDone()) { // 仅取消未完成的任务

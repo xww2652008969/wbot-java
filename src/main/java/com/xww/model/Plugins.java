@@ -1,13 +1,11 @@
 package com.xww.model;
 
 import com.xww.client.Httpclient;
-import okhttp3.OkHttpClient;
 
 public interface Plugins {
-    void setHttpclient(Httpclient httpclient);
+    
 
-    public Httpclient httpclient();
-
+    //事件
     void GroupHandle(Message message);
 
     void PrivateHandle(Message message);
@@ -17,4 +15,6 @@ public interface Plugins {
     void NoticeHandle(Message message);
 
     void Push();
+
+    void setApi(Httpclient httpclient);
 }

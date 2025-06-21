@@ -1,4 +1,4 @@
-package com.xww.bot;
+package com.xww.core;
 
 import com.xww.PluginManager.PluginScanner;
 import com.xww.client.Httpclient;
@@ -15,12 +15,12 @@ public class Bot {
     private final WsClient wsClient;
 
 
-    private LinkedBlockingQueue<Message> messagesQueue;  //接收的数据队列
-    private Set<Plugins> Plugins;
+    private final LinkedBlockingQueue<Message> messagesQueue;  //接收的数据队列
+    private final Set<BasePlugins> Plugins;
 
     public Bot(BootConfig config) {
 
-        if (config.Wsurl() == null || config.Httpurl() == null) {
+        if (config.getWsurl() == null || config.getHttpurl() == null) {
             throw new RuntimeException("没有配置Wsurl或者Httpurl");
         }
 
@@ -38,7 +38,7 @@ public class Bot {
 
     private void InitializePlugins() {
         for (var p : this.Plugins) {
-            p.setHttpclient(new Httpclient(this.config));
+            p.setApi(new Httpclient(this.config));
         }
     }
 

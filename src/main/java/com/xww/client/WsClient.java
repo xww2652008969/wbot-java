@@ -1,7 +1,7 @@
 package com.xww.client;
 
 import com.xww.Controller.WsControlle;
-import com.xww.bot.BootConfig;
+import com.xww.core.BootConfig;
 import com.xww.model.Message;
 import okhttp3.*;
 
@@ -18,9 +18,9 @@ public class WsClient {
                 .readTimeout(0, TimeUnit.MILLISECONDS) // 长连接无超时
                 .build();
         Request.Builder builder = new Request.Builder()
-                .url(config.Wsurl());
-        if (config.Wstoken() != null) {
-            builder.header("Authorization", "Bearer " + config.Wstoken());
+                .url(config.getWsurl());
+        if (config.getWstoken() != null) {
+            builder.header("Authorization", "Bearer " + config.getWstoken());
         }
         request = builder.build();
     }

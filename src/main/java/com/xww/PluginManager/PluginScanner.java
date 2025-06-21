@@ -1,6 +1,7 @@
 package com.xww.PluginManager;
 
-import com.xww.model.AutomaticRegistration;
+import com.xww.core.BasePlugins;
+import com.xww.model.BotPlugin;
 import com.xww.model.Plugins;
 
 import java.io.File;
@@ -21,8 +22,8 @@ public class PluginScanner {
      *
      * @return 插件类集合
      */
-    public static Set<Plugins> scanAllPlugins() {
-        Set<Class<AutomaticRegistration>> pluginClasses = new HashSet<>();
+    public static Set<BasePlugins> scanAllPlugins() {
+        Set<Class<BotPlugin>> pluginClasses = new HashSet<>();
         // 获取类路径下所有资源（包括目录和 JAR）
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
         try {
@@ -42,10 +43,10 @@ public class PluginScanner {
         } catch (IOException e) {
             System.out.println(e);
         }
-        var a = new HashSet<Plugins>();
+        var a = new HashSet<BasePlugins>();
         for (var p : pluginClasses) {
             try {
-                Plugins instance = (Plugins) p.getDeclaredConstructor().newInstance();
+                BasePlugins instance = (BasePlugins) p.getDeclaredConstructor().newInstance();
                 a.add(instance);
             } catch (InstantiationException | NoSuchMethodException | InvocationTargetException |
                      IllegalAccessException e) {
@@ -58,8 +59,8 @@ public class PluginScanner {
     /**
      * 扫描文件系统中的类路径目录（递归所有子目录）
      */
-    private static Set<Class<AutomaticRegistration>> scanFileSystemClasspath(String directoryPath) {
-        Set<Class<AutomaticRegistration>> classes = new HashSet<>();
+    private static Set<Class<BotPlugin>> scanFileSystemClasspath(String directoryPath) {
+        Set<Class<BotPlugin>> classes = new HashSet<>();
         File directory = new File(directoryPath);
         if (!directory.exists()) return classes;
 
@@ -71,7 +72,7 @@ public class PluginScanner {
     /**
      * 递归扫描目录，提取 .class 文件并转换为类名
      */
-    private static void scanDirectoryForClasses(File directory, String currentPackage, Set<Class<AutomaticRegistration>> classes) {
+    private static void scanDirectoryForClasses(File directory, String currentPackage, Set<Class<BotPlugin>> classes) {
         File[] files = directory.listFiles();
         if (files == null) return;
 
@@ -87,8 +88,8 @@ public class PluginScanner {
                         : currentPackage + "." + file.getName().substring(0, file.getName().length() - 6);
                 try {
                     Class<?> clazz = Class.forName(className);
-                    if (clazz.isAnnotationPresent(AutomaticRegistration.class)) {
-                        classes.add((Class<AutomaticRegistration>) clazz);
+                    if (clazz.isAnnotationPresent(BotPlugin.class)) {
+                        classes.add((Class<BotPlugin>) clazz);
                     }
                 } catch (ClassNotFoundException | NoClassDefFoundError e) {
                     // 忽略无法加载的类（如依赖缺失）
@@ -101,8 +102,8 @@ public class PluginScanner {
     /**
      * 扫描 JAR 文件中的所有 .class 文件
      */
-    private static Set<Class<AutomaticRegistration>> scanJarFile(URL jarUrl) throws IOException {
-        Set<Class<AutomaticRegistration>> classes = new HashSet<>();
+    private static Set<Class<BotPlugin>> scanJarFile(URL jarUrl) throws IOException {
+        Set<Class<BotPlugin>> classes = new HashSet<>();
         URLConnection connection = jarUrl.openConnection();
         if (connection instanceof JarURLConnection) {
             JarFile jarFile = ((JarURLConnection) connection).getJarFile();
@@ -120,8 +121,8 @@ public class PluginScanner {
                             .replace('/', '.');
                     try {
                         Class<?> clazz = Class.forName(className);
-                        if (clazz.isAnnotationPresent(AutomaticRegistration.class)) {
-                            classes.add((Class<AutomaticRegistration>) clazz);
+                        if (clazz.isAnnotationPresent(BotPlugin.class)) {
+                            classes.add((Class<BotPlugin>) clazz);
                         }
                     } catch (ClassNotFoundException | NoClassDefFoundError e) {
                     }

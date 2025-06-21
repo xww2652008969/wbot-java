@@ -16,10 +16,10 @@ public class ChatMessage {
     @JSONField(name = "message")
     private List<ChatMessageData> message;
 
-    public ChatMessage() {
-        groupId = 0;
-        userId = 0;
-        message = new ArrayList<ChatMessageData>();
+    public ChatMessage(long groupid, long userid) {
+        groupId = groupid;
+        userId = groupid;
+        message = new ArrayList<>();
     }
 
     // getter 和 setter
@@ -47,13 +47,12 @@ public class ChatMessage {
         this.message = message;
     }
 
-    // 嵌套类：ChatMessageData（对应 Go 中的 ChatMessageData）
     public static class ChatMessageData {
         @JSONField(name = "type")
         private String type;
 
         @JSONField(name = "data")
-        private MessagePayload data; // 内部类 MessagePayload
+        private MessagePayload data;
 
         // 无参构造函数
         public ChatMessageData(String type, MessagePayload data) {
@@ -81,7 +80,7 @@ public class ChatMessage {
 
     public static class MessagePayload {
         @JSONField(name = "qq")
-        private String qq; // 可选字段（JSON 中可能不存在）
+        private String qq;
 
         @JSONField(name = "name")
         private String name;
@@ -99,22 +98,21 @@ public class ChatMessage {
         private String url;
 
         @JSONField(name = "sub_Type")
-        private Integer subType; // Go 中是 int，Java 用 Integer 允许 null
+        private Integer subType;
 
         @JSONField(name = "file_Size")
-        private String fileSize; // 注意：Java 字段名与 JSON 键名 "file_Size" 映射
+        private String fileSize;
 
         @JSONField(name = "type")
-        private String type; // 与外层 ChatMessageData 的 type 字段同名，但通过 JSON 键区分
+        private String type;
 
         @JSONField(name = "data")
-        private String data; // 与外层 ChatMessageData 的 data 字段同名，但通过 JSON 键区分
+        private String data;
 
         // 无参构造函数
         public MessagePayload() {
         }
 
-        // getter 和 setter（示例）
         public String getQq() {
             return qq;
         }
@@ -194,5 +192,89 @@ public class ChatMessage {
         public void setData(String data) {
             this.data = data;
         }
+    }
+
+
+    private ChatMessage addMessage(String msgType, MessagePayload data) {
+        message.add(new ChatMessage.ChatMessageData(msgType, data));
+        return this;
+    }
+
+    /**
+     * @param data 图片url 或者本地目录
+     * @return 返回对象
+     */
+    public ChatMessage addImage(String data) {
+        var d = new ChatMessage.MessagePayload();
+        d.setFile(data);
+        return addMessage(MessageType.MsgTypeImage, d);
+    }
+
+    public ChatMessage addFace(int id) {
+        ChatMessage.MessagePayload payload = new ChatMessage.MessagePayload();
+        payload.setId(String.valueOf(id));
+        return addMessage(MessageType.MsgTypeFace, payload);
+    }
+
+    public ChatMessage addRecord(String url) {
+        ChatMessage.MessagePayload payload = new ChatMessage.MessagePayload();
+        payload.setFile(url);
+        return addMessage(MessageType.MsgTypeRecord, payload);
+    }
+
+    public ChatMessage addVideo(String url) {
+        ChatMessage.MessagePayload payload = new ChatMessage.MessagePayload();
+        payload.setFile(url);
+        return addMessage(MessageType.MsgTypeVideo, payload);
+    }
+
+    public ChatMessage addReply(long id) {
+        ChatMessage.MessagePayload payload = new ChatMessage.MessagePayload();
+        payload.setId(String.valueOf(id));
+        return addMessage(MessageType.MsgTypeReply, payload);
+    }
+
+    public ChatMessage addMusicCard(String t, int id) {
+        ChatMessage.MessagePayload payload = new ChatMessage.MessagePayload();
+        payload.setType(t);
+        payload.setId(String.valueOf(id));
+        return addMessage(MessageType.MsgTypeMusic, payload);
+    }
+
+//    public ChatMessage AddDice() {
+//        ChatMessage.MessagePayload payload = new ChatMessage.MessagePayload();
+//        payload.setType(MsgTypeDice);  // 直接使用枚举名（与 Go 的 MsgTypeDice 对应）
+//        return addMessage(MsgTypeDice, payload);
+//    }
+
+    public ChatMessage addFile(String url) {
+        ChatMessage.MessagePayload payload = new ChatMessage.MessagePayload();
+        payload.setFile(url);
+        return addMessage(MessageType.MsgTypeFile, payload);
+    }
+
+    public ChatMessage addText(String text) {
+        ChatMessage.MessagePayload payload = new ChatMessage.MessagePayload();
+        payload.setText(text);
+        return addMessage(MessageType.MsgTypeText, payload);
+    }
+
+    public ChatMessage addAt(long qq) {
+        ChatMessage.MessagePayload payload = new ChatMessage.MessagePayload();
+        payload.setQq(qq == 0 ? "all" : String.valueOf(qq));
+        return addMessage(MessageType.MsgTypeAt, payload).addText(" ");
+    }
+
+    class MessageType {
+        public static final String MsgTypeText = "text";
+        public static final String MsgTypeAt = "at";
+        public static final String MsgTypeImage = "image";
+        public static final String MsgTypeFace = "face";
+        public static final String MsgTypeRecord = "record";
+        public static final String MsgTypeVideo = "video";
+        public static final String MsgTypeReply = "reply";
+        public static final String MsgTypeMusic = "music";
+        public static final String MsgTypeDice = "dice";
+        public static final String MsgTypeFile = "file";
     }
 }
