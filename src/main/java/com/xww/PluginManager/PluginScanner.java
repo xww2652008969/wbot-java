@@ -41,7 +41,7 @@ public class PluginScanner {
                 }
             }
         } catch (IOException e) {
-            System.out.println(e);
+            e.printStackTrace();
         }
         var a = new HashSet<BasePlugins>();
         for (var p : pluginClasses) {
