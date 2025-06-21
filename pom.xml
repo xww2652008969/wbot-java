@@ -58,16 +58,14 @@
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <version>1.18.24</version>
+            <version>1.18.28</version>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 
     <build>
 
-
         <plugins>
-
-            <!-- 打包源码（生成 sources.jar） -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-source-plugin</artifactId>
@@ -113,6 +111,9 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.11.0</version>
                 <configuration>
+                    <compilerArgs>
+                        <arg>-Xlint:unchecked</arg> <!-- 启用详细未检查警告 -->
+                    </compilerArgs>
                     <source>17</source>
                     <target>17</target>
                 </configuration>

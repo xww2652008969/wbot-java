@@ -16,7 +16,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
-@Slf4j
+
 public class PluginScanner {
     /**
      * 扫描整个类路径，查找所有标注 @Plugin 的类
@@ -93,7 +93,9 @@ public class PluginScanner {
                 try {
                     Class<?> clazz = Class.forName(className);
                     if (clazz.isAnnotationPresent(BotPlugin.class)) {
-                        classes.add((Class<BotPlugin>) clazz);
+                        @SuppressWarnings("unchecked")
+                        Class<BotPlugin> botPluginClass = (Class<BotPlugin>) clazz;
+                        classes.add(botPluginClass);
                     }
                 } catch (ClassNotFoundException | NoClassDefFoundError e) {
                     // 忽略无法加载的类（如依赖缺失）
@@ -126,7 +128,10 @@ public class PluginScanner {
                     try {
                         Class<?> clazz = Class.forName(className);
                         if (clazz.isAnnotationPresent(BotPlugin.class)) {
-                            classes.add((Class<BotPlugin>) clazz);
+
+                            @SuppressWarnings("unchecked")
+                            Class<BotPlugin> botPluginClass = (Class<BotPlugin>) clazz;
+                            classes.add(botPluginClass);
                         }
                     } catch (ClassNotFoundException | NoClassDefFoundError e) {
                     }

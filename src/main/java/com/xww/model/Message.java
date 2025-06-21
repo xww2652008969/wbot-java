@@ -2,9 +2,14 @@ package com.xww.model;
 
 import com.alibaba.fastjson2.annotation.JSONField;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.List;
+
 @Data
+@Setter
+@Getter
 public class Message {
     // 基础字段（基本类型或包装类，可选字段用包装类）
     @JSONField(name = "self_id")
@@ -59,14 +64,14 @@ public class Message {
     private String noticeType; // 可能为 null
 
     @JSONField(name = "target_id")
-    private Long targetId; // Go 中是 int64，Java 用 Long 允许 null
+    private Long targetId;
 
     @JSONField(name = "sender_id")
-    private Integer senderId; // Go 中是 int，Java 用 Integer 允许 null
+    private Integer senderId;
 
     // 嵌套结构体 RawInfo（静态内部类，元素可选）
     @JSONField(name = "raw_info")
-    private List<RawInfoItem> rawInfo; // 可能为 null 或空列表
+    private List<RawInfoItem> rawInfo;
 
     // 嵌套类 Sender（静态内部类）
     @Data
@@ -84,7 +89,8 @@ public class Message {
         private String role;
 
     }
-@Data
+
+    @Data
     // 嵌套类 RawInfoItem（静态内部类，对应 Go 中的匿名结构体）
     public static class RawInfoItem {
         @JSONField(name = "col")

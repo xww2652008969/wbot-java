@@ -21,6 +21,7 @@ public class Httpclient {
     public Response post(String path, String data) {
         Request.Builder b = new Request.Builder();
         if (this.config.getHttpToken() != null) {
+            config.getHttpUrl();
             b.header("Authorization", "Bearer " + this.config.getHttpToken());
         }
 
