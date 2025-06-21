@@ -52,10 +52,10 @@ public class Event {
         for (Plugins plugin : plugins) {
             Future<?> future = PLUGIN_EXECUTOR.submit(() -> {
                 switch (eventKind) {
-                    case MessageSent -> plugin.MessageSendhandle(message);
-                    case MessageGroup -> plugin.GroupHandle(message);
-                    case MessageNotice -> plugin.NoticeHandle(message);
-                    case MessagePrivate -> plugin.PrivateHandle(message);
+                    case MessageSent -> plugin.messageSendhandle(message);
+                    case MessageGroup -> plugin.groupHandle(message);
+                    case MessageNotice -> plugin.noticeHandle(message);
+                    case MessagePrivate -> plugin.privateHandle(message);
                 }
             });
             futures.add(future);

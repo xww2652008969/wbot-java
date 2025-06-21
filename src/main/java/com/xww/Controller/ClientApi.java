@@ -16,51 +16,51 @@ public class ClientApi {
     }
 
     /**
-     * @param groupid 群号 创建一个用于发送群聊消息的ChatMessage
+     * @param groupId 群号 创建一个用于发送群聊消息的ChatMessage
      */
-    public void setGroupMessage(long groupid) {
-        chatmessage = new ChatMessage(groupid, 0);
+    public void setGroupMessage(long groupId) {
+        chatmessage = new ChatMessage(groupId, 0);
     }
 
     /**
      * @param userid qq号 建一个用于发送私聊消息的ChatMessage
      */
-    public void setPrivateMessag(long userid) {
+    public void setPrivateMessage(long userid) {
         chatmessage = new ChatMessage(0, userid);
     }
 
 
     public Response sendGroupMsg() {
         String jsonString = JSON.toJSONString(chatmessage);
-        return client.Post("/send_group_msg", jsonString);
+        return client.post("/send_group_msg", jsonString);
     }
 
     public Response sendPrivateMsg() {
         String jsonString = JSON.toJSONString(chatmessage);
-        return client.Post("/send_private_msg", jsonString);
+        return client.post("/send_private_msg", jsonString);
     }
 
-    public Response SendForwardMsg(String data) {
-        return client.Post("/send_forward_msg", data);
+    public Response sendForwardMsg(String data) {
+        return client.post("/send_forward_msg", data);
     }
 
-    public Response SendGrouppoke(Long groupid, Long userid) {
+    public Response sendGroupPoke(Long groupId, Long userid) {
         var h = new HashMap<String, String>();
-        h.put("group_id", String.valueOf(groupid));
+        h.put("group_id", String.valueOf(groupId));
         h.put("user_id", String.valueOf(userid));
-        return client.Post("/group_poke", JSON.toJSONString(h));
+        return client.post("/group_poke", JSON.toJSONString(h));
     }
 
-    public Response SendPrivatepoke(Long userid) {
+    public Response sendPrivatePoke(Long userid) {
         var h = new HashMap<String, String>();
         h.put("user_id", String.valueOf(userid));
-        return client.Post("/friend_poke", JSON.toJSONString(h));
+        return client.post("/friend_poke", JSON.toJSONString(h));
     }
 
-    public Response DeleMsg(Long msgid) {
+    public Response deleteMsg(Long msgid) {
         var h = new HashMap<String, String>();
         h.put("message_id", String.valueOf(msgid));
-        return client.Post("/delete_msg", JSON.toJSONString(h));
+        return client.post("/delete_msg", JSON.toJSONString(h));
     }
     //剩余2个先不管了
 }

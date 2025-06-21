@@ -5,7 +5,6 @@ import com.xww.client.Httpclient;
 import com.xww.client.WsClient;
 import com.xww.event.Event;
 import com.xww.model.Message;
-import com.xww.model.Plugins;
 
 import java.util.Set;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -20,8 +19,8 @@ public class Bot {
 
     public Bot(BootConfig config) {
 
-        if (config.getWsurl() == null || config.getHttpurl() == null) {
-            throw new RuntimeException("没有配置Wsurl或者Httpurl");
+        if (config.getWsUrl() == null || config.getHttpUrl() == null) {
+            throw new RuntimeException("没有配置wsRrl或者httpUrl");
         }
 
         this.config = config;
@@ -30,13 +29,13 @@ public class Bot {
         messagesQueue = new LinkedBlockingQueue<>();
     }
 
-    public void Run() {
-        this.InitializePlugins();
+    public void run() {
+        this.initializePlugins();
         wsClient.Run(messagesQueue);
         Event.PostEvent(Plugins, messagesQueue);
     }
 
-    private void InitializePlugins() {
+    private void initializePlugins() {
         for (var p : this.Plugins) {
             p.setApi(new Httpclient(this.config));
         }

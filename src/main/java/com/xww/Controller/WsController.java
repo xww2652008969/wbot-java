@@ -8,10 +8,10 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.concurrent.BlockingQueue;
 
-public class WsControlle extends WebSocketListener {
+public class WsController extends WebSocketListener {
     private final BlockingQueue<Message> MessageQueue;
 
-    public WsControlle(BlockingQueue<Message> messageQueue) {
+    public WsController(BlockingQueue<Message> messageQueue) {
         MessageQueue = messageQueue;
     }
 

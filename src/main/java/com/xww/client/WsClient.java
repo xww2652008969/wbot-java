@@ -1,6 +1,6 @@
 package com.xww.client;
 
-import com.xww.Controller.WsControlle;
+import com.xww.Controller.WsController;
 import com.xww.core.BootConfig;
 import com.xww.model.Message;
 import okhttp3.*;
@@ -26,7 +26,7 @@ public class WsClient {
     }
 
     public void Run(LinkedBlockingQueue<Message> Queue) {
-        client.newWebSocket(request, new WsControlle(Queue));
+        client.newWebSocket(request, new WsController(Queue));
 
     }
 }

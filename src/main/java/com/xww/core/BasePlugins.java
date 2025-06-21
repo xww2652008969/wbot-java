@@ -42,26 +42,26 @@ public abstract class BasePlugins implements Plugins {
     }
 
     @Override
-    public void GroupHandle(Message message) {
+    public void groupHandle(Message message) {
     }
 
     @Override
-    public void PrivateHandle(Message message) {
-
-    }
-
-    @Override
-    public void MessageSendhandle(Message message) {
+    public void privateHandle(Message message) {
 
     }
 
     @Override
-    public void NoticeHandle(Message message) {
+    public void messageSendhandle(Message message) {
 
     }
 
     @Override
-    public void Push() {
+    public void noticeHandle(Message message) {
+
+    }
+
+    @Override
+    public void push() {
 
     }
 }

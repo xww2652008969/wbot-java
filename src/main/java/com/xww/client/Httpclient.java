@@ -15,7 +15,7 @@ public class Httpclient {
         this.config = config;
     }
 
-    public Response Post(String path, String data) {
+    public Response post(String path, String data) {
 
         var b = new Request.Builder();
         if (this.config.getHttptoken() != null) {
