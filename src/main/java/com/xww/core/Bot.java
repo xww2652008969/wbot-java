@@ -12,8 +12,6 @@ import java.util.concurrent.LinkedBlockingQueue;
 public class Bot {
     private final BootConfig config;
     private final WsClient wsClient;
-
-
     private final LinkedBlockingQueue<Message> messagesQueue;  //接收的数据队列
     private final Set<BasePlugins> Plugins;
 
@@ -22,7 +20,6 @@ public class Bot {
         if (config.getWsUrl() == null || config.getHttpUrl() == null) {
             throw new RuntimeException("没有配置wsRrl或者httpUrl");
         }
-
         this.config = config;
         wsClient = new WsClient(this.config);
         Plugins = PluginScanner.scanAllPlugins();
@@ -31,8 +28,8 @@ public class Bot {
 
     public void run() {
         this.initializePlugins();
-        wsClient.Run(messagesQueue);
-        Event.PostEvent(Plugins, messagesQueue);
+        wsClient.run(messagesQueue);
+        Event.postEvent(Plugins, messagesQueue);
     }
 
     private void initializePlugins() {
@@ -40,6 +37,4 @@ public class Bot {
             p.setApi(new Httpclient(this.config));
         }
     }
-
-
 }

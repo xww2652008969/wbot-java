@@ -1,4 +1,4 @@
-package com.xww.Controller;
+package com.xww.controller;
 
 import com.alibaba.fastjson2.JSON;
 import com.xww.model.Message;

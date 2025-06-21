@@ -1,10 +1,14 @@
 package com.xww.model;
 
 import com.alibaba.fastjson2.annotation.JSONField;
+import com.xww.constants.MessageType;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Data
 public class ChatMessage {
     // 主类字段
     @JSONField(name = "group_id")
@@ -16,68 +20,23 @@ public class ChatMessage {
     @JSONField(name = "message")
     private List<ChatMessageData> message;
 
-    public ChatMessage(long groupid, long userid) {
-        groupId = groupid;
-        userId = groupid;
+    public ChatMessage(long groupId, long userid) {
+        this.groupId = groupId;
+        userId = groupId;
         message = new ArrayList<>();
     }
 
-    // getter 和 setter
-    public long getGroupId() {
-        return groupId;
-    }
-
-    public void setGroupId(long groupId) {
-        this.groupId = groupId;
-    }
-
-    public long getUserId() {
-        return userId;
-    }
-
-    public void setUserId(long userId) {
-        this.userId = userId;
-    }
-
-    public List<ChatMessageData> getMessage() {
-        return message;
-    }
-
-    public void setMessage(List<ChatMessageData> message) {
-        this.message = message;
-    }
-
+    @Data
+    @AllArgsConstructor
     public static class ChatMessageData {
         @JSONField(name = "type")
         private String type;
 
         @JSONField(name = "data")
         private MessagePayload data;
-
-        // 无参构造函数
-        public ChatMessageData(String type, MessagePayload data) {
-            this.type = type;
-            this.data = data;
-        }
-
-        // getter 和 setter
-        public String getType() {
-            return type;
-        }
-
-        public void setType(String type) {
-            this.type = type;
-        }
-
-        public MessagePayload getData() {
-            return data;
-        }
-
-        public void setData(MessagePayload data) {
-            this.data = data;
-        }
     }
 
+    @Data
     public static class MessagePayload {
         @JSONField(name = "qq")
         private String qq;
@@ -108,90 +67,6 @@ public class ChatMessage {
 
         @JSONField(name = "data")
         private String data;
-
-        // 无参构造函数
-        public MessagePayload() {
-        }
-
-        public String getQq() {
-            return qq;
-        }
-
-        public void setQq(String qq) {
-            this.qq = qq;
-        }
-
-        public String getName() {
-            return name;
-        }
-
-        public void setName(String name) {
-            this.name = name;
-        }
-
-        public String getText() {
-            return text;
-        }
-
-        public void setText(String text) {
-            this.text = text;
-        }
-
-        public String getFile() {
-            return file;
-        }
-
-        public void setFile(String file) {
-            this.file = file;
-        }
-
-        public String getId() {
-            return id;
-        }
-
-        public void setId(String id) {
-            this.id = id;
-        }
-
-        public String getUrl() {
-            return url;
-        }
-
-        public void setUrl(String url) {
-            this.url = url;
-        }
-
-        public Integer getSubType() {
-            return subType;
-        }
-
-        public void setSubType(Integer subType) {
-            this.subType = subType;
-        }
-
-        public String getFileSize() {
-            return fileSize;
-        }
-
-        public void setFileSize(String fileSize) {
-            this.fileSize = fileSize;
-        }
-
-        public String getType() {
-            return type;
-        }
-
-        public void setType(String type) {
-            this.type = type;
-        }
-
-        public String getData() {
-            return data;
-        }
-
-        public void setData(String data) {
-            this.data = data;
-        }
     }
 
 
@@ -205,40 +80,40 @@ public class ChatMessage {
      * @return 返回对象
      */
     public ChatMessage addImage(String data) {
-        var d = new ChatMessage.MessagePayload();
+        var d = new MessagePayload();
         d.setFile(data);
-        return addMessage(MessageType.MsgTypeImage, d);
+        return addMessage(MessageType.MSG_TYPE_IMAGE, d);
     }
 
     public ChatMessage addFace(int id) {
-        ChatMessage.MessagePayload payload = new ChatMessage.MessagePayload();
+        MessagePayload payload = new MessagePayload();
         payload.setId(String.valueOf(id));
-        return addMessage(MessageType.MsgTypeFace, payload);
+        return addMessage(MessageType.MSG_TYPE_FACE, payload);
     }
 
     public ChatMessage addRecord(String url) {
-        ChatMessage.MessagePayload payload = new ChatMessage.MessagePayload();
+        MessagePayload payload = new MessagePayload();
         payload.setFile(url);
-        return addMessage(MessageType.MsgTypeRecord, payload);
+        return addMessage(MessageType.MSG_TYPE_RECORD, payload);
     }
 
     public ChatMessage addVideo(String url) {
-        ChatMessage.MessagePayload payload = new ChatMessage.MessagePayload();
+        MessagePayload payload = new MessagePayload();
         payload.setFile(url);
-        return addMessage(MessageType.MsgTypeVideo, payload);
+        return addMessage(MessageType.MSG_TYPE_VIDEO, payload);
     }
 
     public ChatMessage addReply(long id) {
-        ChatMessage.MessagePayload payload = new ChatMessage.MessagePayload();
+        MessagePayload payload = new MessagePayload();
         payload.setId(String.valueOf(id));
-        return addMessage(MessageType.MsgTypeReply, payload);
+        return addMessage(MessageType.MSG_TYPE_REPLY, payload);
     }
 
     public ChatMessage addMusicCard(String t, int id) {
         ChatMessage.MessagePayload payload = new ChatMessage.MessagePayload();
         payload.setType(t);
         payload.setId(String.valueOf(id));
-        return addMessage(MessageType.MsgTypeMusic, payload);
+        return addMessage(MessageType.MSG_TYPE_MUSIC, payload);
     }
 
 //    public ChatMessage AddDice() {
@@ -250,31 +125,18 @@ public class ChatMessage {
     public ChatMessage addFile(String url) {
         ChatMessage.MessagePayload payload = new ChatMessage.MessagePayload();
         payload.setFile(url);
-        return addMessage(MessageType.MsgTypeFile, payload);
+        return addMessage(MessageType.MSG_TYPE_FILE, payload);
     }
 
     public ChatMessage addText(String text) {
         ChatMessage.MessagePayload payload = new ChatMessage.MessagePayload();
         payload.setText(text);
-        return addMessage(MessageType.MsgTypeText, payload);
+        return addMessage(MessageType.MSG_TYPE_TEXT, payload);
     }
 
     public ChatMessage addAt(long qq) {
         ChatMessage.MessagePayload payload = new ChatMessage.MessagePayload();
         payload.setQq(qq == 0 ? "all" : String.valueOf(qq));
-        return addMessage(MessageType.MsgTypeAt, payload).addText(" ");
-    }
-
-    class MessageType {
-        public static final String MsgTypeText = "text";
-        public static final String MsgTypeAt = "at";
-        public static final String MsgTypeImage = "image";
-        public static final String MsgTypeFace = "face";
-        public static final String MsgTypeRecord = "record";
-        public static final String MsgTypeVideo = "video";
-        public static final String MsgTypeReply = "reply";
-        public static final String MsgTypeMusic = "music";
-        public static final String MsgTypeDice = "dice";
-        public static final String MsgTypeFile = "file";
+        return addMessage(MessageType.MSG_TYPE_AT, payload).addText(" ");
     }
 }

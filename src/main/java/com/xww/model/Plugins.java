@@ -8,7 +8,7 @@ public interface Plugins {
 
     void privateHandle(Message message);
 
-    void messageSendhandle(Message message);
+    void messageSendHandle(Message message);
 
     void noticeHandle(Message message);
 

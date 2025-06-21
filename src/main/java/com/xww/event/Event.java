@@ -1,14 +1,17 @@
 package com.xww.event;
 
+import com.xww.constants.EventKind;
 import com.xww.core.BasePlugins;
 import com.xww.model.Message;
 import com.xww.model.Plugins;
+import lombok.extern.slf4j.Slf4j;
+import lombok.extern.slf4j.XSlf4j;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.*;
-
+@Slf4j
 public class Event {
     private static Set<BasePlugins> plugins;
     private static final ExecutorService PLUGIN_EXECUTOR = Executors.newFixedThreadPool(
@@ -17,27 +20,27 @@ public class Event {
     );
     private static final ScheduledExecutorService SCHEDULER = Executors.newScheduledThreadPool(10);
 
-    public static void PostEvent(Set<BasePlugins> Plugins, LinkedBlockingQueue<Message> MessageQueue) {
-        plugins = Plugins;
+    public static void postEvent(Set<BasePlugins> plugins, LinkedBlockingQueue<Message> messages) {
+        Event.plugins = plugins;
         for (; ; ) {
             try {
-                Message message = MessageQueue.take();
+                Message message = messages.take();
                 switch (message.getPostType()) {
                     case "message": {
                         switch (message.getMessageType()) {
                             case "group": {
-                                sendevent(message, EventKind.MessageGroup);
+                                sendEvent(message, EventKind.GroupMessage);
                             }
                             case "private": {
-                                sendevent(message, EventKind.MessagePrivate);
+                                sendEvent(message, EventKind.PrivateMessage);
                             }
                         }
                     }
                     case "notice": {
-                        sendevent(message, EventKind.MessageNotice);
+                        sendEvent(message, EventKind.NoticeMessage);
                     }
                     case "message_sent": {
-                        sendevent(message, EventKind.MessageSent);
+                        sendEvent(message, EventKind.MessageSend);
                     }
                 }
             } catch (Exception e) {
@@ -46,16 +49,16 @@ public class Event {
         }
     }
 
-    private static void sendevent(Message message, EventKind eventKind) {
+    private static void sendEvent(Message message, EventKind eventKind) {
         int timeoutSeconds = 10000;
         List<Future<?>> futures = new ArrayList<>();
         for (Plugins plugin : plugins) {
             Future<?> future = PLUGIN_EXECUTOR.submit(() -> {
                 switch (eventKind) {
-                    case MessageSent -> plugin.messageSendhandle(message);
-                    case MessageGroup -> plugin.groupHandle(message);
-                    case MessageNotice -> plugin.noticeHandle(message);
-                    case MessagePrivate -> plugin.privateHandle(message);
+                    case MessageSend -> plugin.messageSendHandle(message);
+                    case GroupMessage -> plugin.groupHandle(message);
+                    case NoticeMessage -> plugin.noticeHandle(message);
+                    case PrivateMessage -> plugin.privateHandle(message);
                 }
             });
             futures.add(future);
@@ -80,9 +83,3 @@ public class Event {
     }
 }
 
-enum EventKind {
-    MessageGroup,
-    MessagePrivate,
-    MessageNotice,
-    MessageSent
-}

@@ -1,9 +1,11 @@
 package com.xww.client;
 
-import com.xww.Controller.WsController;
+import com.xww.controller.WsController;
 import com.xww.core.BootConfig;
 import com.xww.model.Message;
-import okhttp3.*;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.WebSocket;
 
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
@@ -17,16 +19,24 @@ public class WsClient {
         client = new OkHttpClient.Builder()
                 .readTimeout(0, TimeUnit.MILLISECONDS) // 长连接无超时
                 .build();
+
         Request.Builder builder = new Request.Builder()
-                .url(config.getWsurl());
-        if (config.getWstoken() != null) {
-            builder.header("Authorization", "Bearer " + config.getWstoken());
+                .url(config.getWsUrl());
+
+        if (config.getWsToken() != null) {
+            builder.header("Authorization", "Bearer " + config.getWsToken());
         }
+
         request = builder.build();
     }
 
-    public void Run(LinkedBlockingQueue<Message> Queue) {
-        client.newWebSocket(request, new WsController(Queue));
-
+    public void run(LinkedBlockingQueue<Message> queue) {
+        webSocket = client.newWebSocket(request, new WsController(queue));
+    }
+    public void shutdown() {
+        if (webSocket != null) {
+            webSocket.close(1000, "Shutdown");
+        }
+        client.dispatcher().executorService().shutdown();
     }
 }
