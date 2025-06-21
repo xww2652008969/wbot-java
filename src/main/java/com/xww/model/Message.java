@@ -1,8 +1,10 @@
 package com.xww.model;
 
 import com.alibaba.fastjson2.annotation.JSONField;
-import java.util.List;
+import lombok.Data;
 
+import java.util.List;
+@Data
 public class Message {
     // 基础字段（基本类型或包装类，可选字段用包装类）
     @JSONField(name = "self_id")
@@ -66,68 +68,8 @@ public class Message {
     @JSONField(name = "raw_info")
     private List<RawInfoItem> rawInfo; // 可能为 null 或空列表
 
-    // 无参构造函数（Fastjson 2 反序列化需要）
-    public Message() {}
-
-    // getter 和 setter（必须！Fastjson 通过反射访问字段）
-    public long getSelfId() { return selfId; }
-    public void setSelfId(long selfId) { this.selfId = selfId; }
-
-    public long getUserId() { return userId; }
-    public void setUserId(long userId) { this.userId = userId; }
-
-    public long getTime() { return time; }
-    public void setTime(long time) { this.time = time; }
-
-    public long getMessageId() { return messageId; }
-    public void setMessageId(long messageId) { this.messageId = messageId; }
-
-    public int getMessageSeq() { return messageSeq; }
-    public void setMessageSeq(int messageSeq) { this.messageSeq = messageSeq; }
-
-    public int getRealId() { return realId; }
-    public void setRealId(int realId) { this.realId = realId; }
-
-    public String getMessageType() { return messageType; }
-    public void setMessageType(String messageType) { this.messageType = messageType; }
-
-    public Sender getSender() { return sender; }
-    public void setSender(Sender sender) { this.sender = sender; }
-
-    public List<ChatMessage.ChatMessageData> getMessage() { return message; }
-    public void setMessage(List<ChatMessage.ChatMessageData> message) { this.message = message; }
-
-    public String getRawMessage() { return rawMessage; }
-    public void setRawMessage(String rawMessage) { this.rawMessage = rawMessage; }
-
-    public int getFont() { return font; }
-    public void setFont(int font) { this.font = font; }
-
-    public String getSubType() { return subType; }
-    public void setSubType(String subType) { this.subType = subType; }
-
-    public String getMessageFormat() { return messageFormat; }
-    public void setMessageFormat(String messageFormat) { this.messageFormat = messageFormat; }
-
-    public String getPostType() { return postType; }
-    public void setPostType(String postType) { this.postType = postType; }
-
-    public long getGroupId() { return groupId; }
-    public void setGroupId(long groupId) { this.groupId = groupId; }
-
-    public String getNoticeType() { return noticeType; }
-    public void setNoticeType(String noticeType) { this.noticeType = noticeType; }
-
-    public Long getTargetId() { return targetId; }
-    public void setTargetId(Long targetId) { this.targetId = targetId; }
-
-    public Integer getSenderId() { return senderId; }
-    public void setSenderId(Integer senderId) { this.senderId = senderId; }
-
-    public List<RawInfoItem> getRawInfo() { return rawInfo; }
-    public void setRawInfo(List<RawInfoItem> rawInfo) { this.rawInfo = rawInfo; }
-
     // 嵌套类 Sender（静态内部类）
+    @Data
     public static class Sender {
         @JSONField(name = "user_id")
         private int userId;
@@ -141,23 +83,8 @@ public class Message {
         @JSONField(name = "role")
         private String role;
 
-        // 无参构造函数
-        public Sender() {}
-
-        // getter 和 setter
-        public int getUserId() { return userId; }
-        public void setUserId(int userId) { this.userId = userId; }
-
-        public String getNickname() { return nickname; }
-        public void setNickname(String nickname) { this.nickname = nickname; }
-
-        public String getCard() { return card; }
-        public void setCard(String card) { this.card = card; }
-
-        public String getRole() { return role; }
-        public void setRole(String role) { this.role = role; }
     }
-
+@Data
     // 嵌套类 RawInfoItem（静态内部类，对应 Go 中的匿名结构体）
     public static class RawInfoItem {
         @JSONField(name = "col")
@@ -183,33 +110,5 @@ public class Message {
 
         @JSONField(name = "tp")
         private String tp;
-
-        // 无参构造函数
-        public RawInfoItem() {}
-
-        // getter 和 setter（示例）
-        public String getCol() { return col; }
-        public void setCol(String col) { this.col = col; }
-
-        public String getNm() { return nm; }
-        public void setNm(String nm) { this.nm = nm; }
-
-        public String getType() { return type; }
-        public void setType(String type) { this.type = type; }
-
-        public String getUid() { return uid; }
-        public void setUid(String uid) { this.uid = uid; }
-
-        public String getJp() { return jp; }
-        public void setJp(String jp) { this.jp = jp; }
-
-        public String getSrc() { return src; }
-        public void setSrc(String src) { this.src = src; }
-
-        public String getTxt() { return txt; }
-        public void setTxt(String txt) { this.txt = txt; }
-
-        public String getTp() { return tp; }
-        public void setTp(String tp) { this.tp = tp; }
     }
 }

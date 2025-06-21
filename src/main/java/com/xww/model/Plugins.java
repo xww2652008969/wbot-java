@@ -3,18 +3,16 @@ package com.xww.model;
 import com.xww.client.Httpclient;
 
 public interface Plugins {
-    
-
     //事件
-    void GroupHandle(Message message);
+    void groupHandle(Message message);
 
-    void PrivateHandle(Message message);
+    void privateHandle(Message message);
 
-    void MessageSendhandle(Message message);
+    void messageSendHandle(Message message);
 
-    void NoticeHandle(Message message);
+    void noticeHandle(Message message);
 
-    void Push();
+    void push();
 
     void setApi(Httpclient httpclient);
 }

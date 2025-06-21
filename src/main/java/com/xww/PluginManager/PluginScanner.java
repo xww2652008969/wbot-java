@@ -3,6 +3,7 @@ package com.xww.PluginManager;
 import com.xww.core.BasePlugins;
 import com.xww.model.BotPlugin;
 import com.xww.model.Plugins;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.File;
 import java.io.IOException;
@@ -15,7 +16,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
-
+@Slf4j
 public class PluginScanner {
     /**
      * 扫描整个类路径，查找所有标注 @Plugin 的类
@@ -31,7 +32,6 @@ public class PluginScanner {
             while (resources.hasMoreElements()) {
                 URL resource = resources.nextElement();
                 String protocol = resource.getProtocol();
-
                 if ("file".equals(protocol)) {
                     // 处理文件系统中的类路径目录（如 target/classes、src/main/resources）
                     pluginClasses.addAll(scanFileSystemClasspath(resource.getFile()));
@@ -41,7 +41,7 @@ public class PluginScanner {
                 }
             }
         } catch (IOException e) {
-            System.out.println(e);
+            e.printStackTrace();
         }
         var a = new HashSet<BasePlugins>();
         for (var p : pluginClasses) {
@@ -50,7 +50,7 @@ public class PluginScanner {
                 a.add(instance);
             } catch (InstantiationException | NoSuchMethodException | InvocationTargetException |
                      IllegalAccessException e) {
-                System.out.println(e);
+                e.printStackTrace();
             }
         }
         return a;
@@ -62,7 +62,9 @@ public class PluginScanner {
     private static Set<Class<BotPlugin>> scanFileSystemClasspath(String directoryPath) {
         Set<Class<BotPlugin>> classes = new HashSet<>();
         File directory = new File(directoryPath);
-        if (!directory.exists()) return classes;
+        if (!directory.exists()) {
+            return classes;
+        }
 
         // 递归扫描目录下的所有 .class 文件
         scanDirectoryForClasses(directory, "", classes);
@@ -74,7 +76,9 @@ public class PluginScanner {
      */
     private static void scanDirectoryForClasses(File directory, String currentPackage, Set<Class<BotPlugin>> classes) {
         File[] files = directory.listFiles();
-        if (files == null) return;
+        if (files == null) {
+            return;
+        }
 
         for (File file : files) {
             if (file.isDirectory()) {
