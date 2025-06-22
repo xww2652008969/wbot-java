@@ -39,7 +39,7 @@ public class Httpclient {
             String json = responseBody.string();
             HttpResult httpResult = JSON.parseObject(json, HttpResult.class);
             return httpResult;
-            
+
         } catch (IOException e) {
             throw new RuntimeException("HTTP 请求失败: " + e.getMessage(), e);
         }

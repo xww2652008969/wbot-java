@@ -26,50 +26,6 @@ public class ChatMessage {
         message = new ArrayList<>();
     }
 
-    @Data
-    @AllArgsConstructor
-    public static class ChatMessageData {
-        @JSONField(name = "type")
-        private String type;
-
-        @JSONField(name = "data")
-        private MessagePayload data;
-    }
-
-    @Data
-    public static class MessagePayload {
-        @JSONField(name = "qq")
-        private String qq;
-
-        @JSONField(name = "name")
-        private String name;
-
-        @JSONField(name = "text")
-        private String text;
-
-        @JSONField(name = "file")
-        private String file;
-
-        @JSONField(name = "id")
-        private String id;
-
-        @JSONField(name = "url")
-        private String url;
-
-        @JSONField(name = "sub_Type")
-        private Integer subType;
-
-        @JSONField(name = "file_Size")
-        private String fileSize;
-
-        @JSONField(name = "type")
-        private String type;
-
-        @JSONField(name = "data")
-        private String data;
-    }
-
-
     private ChatMessage addMessage(String msgType, MessagePayload data) {
         message.add(new ChatMessage.ChatMessageData(msgType, data));
         return this;
@@ -116,12 +72,6 @@ public class ChatMessage {
         return addMessage(MessageType.MSG_TYPE_MUSIC, payload);
     }
 
-//    public ChatMessage AddDice() {
-//        ChatMessage.MessagePayload payload = new ChatMessage.MessagePayload();
-//        payload.setType(MsgTypeDice);  // 直接使用枚举名（与 Go 的 MsgTypeDice 对应）
-//        return addMessage(MsgTypeDice, payload);
-//    }
-
     public ChatMessage addFile(String url) {
         ChatMessage.MessagePayload payload = new ChatMessage.MessagePayload();
         payload.setFile(url);
@@ -134,9 +84,58 @@ public class ChatMessage {
         return addMessage(MessageType.MSG_TYPE_TEXT, payload);
     }
 
+//    public ChatMessage AddDice() {
+//        ChatMessage.MessagePayload payload = new ChatMessage.MessagePayload();
+//        payload.setType(MsgTypeDice);  // 直接使用枚举名（与 Go 的 MsgTypeDice 对应）
+//        return addMessage(MsgTypeDice, payload);
+//    }
+
     public ChatMessage addAt(long qq) {
         ChatMessage.MessagePayload payload = new ChatMessage.MessagePayload();
         payload.setQq(qq == 0 ? "all" : String.valueOf(qq));
         return addMessage(MessageType.MSG_TYPE_AT, payload).addText(" ");
+    }
+
+    @Data
+    @AllArgsConstructor
+    public static class ChatMessageData {
+        @JSONField(name = "type")
+        private String type;
+
+        @JSONField(name = "data")
+        private MessagePayload data;
+    }
+
+    @Data
+    public static class MessagePayload {
+        @JSONField(name = "qq")
+        private String qq;
+
+        @JSONField(name = "name")
+        private String name;
+
+        @JSONField(name = "text")
+        private String text;
+
+        @JSONField(name = "file")
+        private String file;
+
+        @JSONField(name = "id")
+        private String id;
+
+        @JSONField(name = "url")
+        private String url;
+
+        @JSONField(name = "sub_Type")
+        private Integer subType;
+
+        @JSONField(name = "file_Size")
+        private String fileSize;
+
+        @JSONField(name = "type")
+        private String type;
+
+        @JSONField(name = "data")
+        private String data;
     }
 }

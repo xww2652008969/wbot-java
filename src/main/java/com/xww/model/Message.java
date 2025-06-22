@@ -2,16 +2,11 @@ package com.xww.model;
 
 import com.alibaba.fastjson2.annotation.JSONField;
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
 
 import java.util.List;
 
 @Data
-@Setter
-@Getter
 public class Message {
-    // 基础字段（基本类型或包装类，可选字段用包装类）
     @JSONField(name = "self_id")
     private long selfId;
 
@@ -33,7 +28,6 @@ public class Message {
     @JSONField(name = "message_type")
     private String messageType;
 
-    // 嵌套结构体 Sender（静态内部类）
     @JSONField(name = "sender")
     private Sender sender;
 

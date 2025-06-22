@@ -8,8 +8,8 @@ import com.xww.model.HttpResult;
 import java.util.HashMap;
 
 public class ClientApi {
-    public ChatMessage chatMessage;
     private final Httpclient client;
+    public ChatMessage chatMessage;
 
     public ClientApi(Httpclient c) {
         client = c;

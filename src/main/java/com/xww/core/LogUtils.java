@@ -16,10 +16,6 @@ public class LogUtils {
         isDev = b;
     }
 
-    public boolean isDev() {
-        return isDev;
-    }
-
     /**
      * 记录 INFO 级别日志（带上下文信息）
      *
@@ -60,14 +56,11 @@ public class LogUtils {
         }
     }
 
-    public static void error(Class<?> clazz, String message, Throwable e, Object... args) {
-        if (!isDev) {
-            return;
-        }
+    public static void error(Class<?> clazz, String message, Object... args) {
         Logger logger = LoggerFactory.getLogger(clazz);
         if (logger.isErrorEnabled()) {
             String logMsg = formatMessage(message, args);
-            logger.error("[{}] {} | 异常信息: {}", getCallerInfo(), logMsg, e.getMessage(), e);
+            logger.error("[{}] {}", getCallerInfo(), logMsg);
         }
     }
 
@@ -96,5 +89,9 @@ public class LogUtils {
             }
         }
         return "[UnknownCaller]";
+    }
+
+    public boolean isDev() {
+        return isDev;
     }
 }

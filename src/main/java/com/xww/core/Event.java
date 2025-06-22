@@ -6,7 +6,9 @@ import com.xww.model.Message;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.*;
+import java.util.concurrent.Future;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.TimeUnit;
 
 public class Event {
 
@@ -14,11 +16,11 @@ public class Event {
 
     public static void postEvent(PluginControl control, LinkedBlockingQueue<Message> messages) {
         pluginControl = control;
-        for (BasePlugins plugin : control.getPlugins()) {
+        for (BasePlugins plugin : control.getPlugins().values()) {
             Future<?> submit = control.getPluginPushExecutor().submit(() -> {
                 plugin.push();
             });
-            control.getPluginPushFuture().put(plugin.getClass().getName(), submit);
+            control.getPluginPushFuture().put(plugin.getName(), submit);
         }
         for (; ; ) {
             try {
@@ -50,7 +52,7 @@ public class Event {
     private static void sendEvent(Message message, EventKind eventKind) {
         int timeoutSeconds = 10000;
         List<Future<?>> futures = new ArrayList<>();
-        for (BasePlugins plugin : pluginControl.getPlugins()) {
+        for (BasePlugins plugin : pluginControl.getPlugins().values()) {
             if (!plugin.isOpen())
                 continue;
             Future<?> future = pluginControl.getPluginEventExecutor().submit(() -> {
@@ -64,7 +66,7 @@ public class Event {
             futures.add(future);
         }
         // 启动超时监控任务（后台执行，不阻塞主线程）
-        pluginControl.getSCHEDULER().schedule(() -> {
+        pluginControl.getScheduledExecutorService().schedule(() -> {
             cancelPendingTasks(futures); // 超时后取消未完成的任务
         }, timeoutSeconds, TimeUnit.SECONDS);
     }

@@ -1,20 +1,26 @@
 package com.xww.core;
 
+import com.xww.PluginManager.PluginControl;
 import com.xww.client.Httpclient;
 import com.xww.controller.ClientApi;
 import com.xww.model.Message;
-import com.xww.model.Plugins;
-
+import lombok.Setter;
 
 /**
  * 插件必须继承BasePlugins或者实现Plugins
  */
-public abstract class BasePlugins implements Plugins {
+public abstract class BasePlugins {
 
     /**
      * 提供发送消息的 API 操作对象
      */
     protected ClientApi postApi;
+
+    /**
+     * 插件控制器 提供api 来控制其它插件
+     */
+    @Setter
+    protected PluginControl pluginControl;
 
     /**
      * 判断插件是否启用
@@ -44,32 +50,38 @@ public abstract class BasePlugins implements Plugins {
      */
     public abstract String getAuthor();
 
-    @Override
+    /**
+     * 插件名字 必须保持唯负责不会加载
+     *
+     * @return
+     */
+    public abstract String getName();
+
+    /**
+     * 设置http
+     *
+     * @param httpclient
+     */
     public void setApi(Httpclient httpclient) {
         postApi = new ClientApi(httpclient);
     }
 
-    @Override
     public void groupHandle(Message message) {
         // 默认不处理
     }
 
-    @Override
     public void privateHandle(Message message) {
         // 默认不处理
     }
 
-    @Override
     public void messageSendHandle(Message message) {
         // 默认不处理
     }
 
-    @Override
     public void noticeHandle(Message message) {
         // 默认不处理
     }
 
-    @Override
     public void push() {
         // 默认不处理
     }

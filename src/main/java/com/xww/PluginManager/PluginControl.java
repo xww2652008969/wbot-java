@@ -1,11 +1,14 @@
 package com.xww.PluginManager;
 
+import com.xww.client.Httpclient;
 import com.xww.core.BasePlugins;
+import com.xww.core.Bot;
+import com.xww.core.LogUtils;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.util.HashMap;
-import java.util.Set;
+import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -17,7 +20,7 @@ public class PluginControl {
     /**
      * 插件列表
      */
-    private Set<BasePlugins> Plugins;
+    private Map<String, BasePlugins> plugins;
     /**
      * 主动行为的Future池
      */
@@ -33,10 +36,10 @@ public class PluginControl {
     /**
      * 处理超时的
      */
-    private ScheduledExecutorService SCHEDULER;
+    private ScheduledExecutorService scheduledExecutorService;
 
-    public PluginControl() {
-        Plugins = PluginScanner.scanAllPlugins();
+    public PluginControl(Bot bot) {
+        plugins = new HashMap<>();
         pluginPushFuture = new HashMap<>();
         pluginEventExecutor = Executors.newFixedThreadPool(
                 Runtime.getRuntime().availableProcessors() * 2,
@@ -46,6 +49,15 @@ public class PluginControl {
                 Runtime.getRuntime().availableProcessors() * 2,
                 r -> new Thread(r, "Push-" + r.hashCode())
         );
-        SCHEDULER = Executors.newScheduledThreadPool(10);
+        scheduledExecutorService = Executors.newScheduledThreadPool(10);
+        for (var p : PluginScanner.scanAllPlugins()) {
+            String pluginName = p.getName();
+            if (plugins.putIfAbsent(pluginName, p) == null) {
+                p.setApi(new Httpclient(bot.getConfig()));
+                p.setPluginControl(this);
+            } else {
+                LogUtils.error(PluginControl.class, "有重复的插件名不加载: " + pluginName);
+            }
+        }
     }
 }

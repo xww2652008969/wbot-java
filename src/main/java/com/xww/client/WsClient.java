@@ -33,6 +33,7 @@ public class WsClient {
     public void run(LinkedBlockingQueue<Message> queue) {
         webSocket = client.newWebSocket(request, new WsController(queue));
     }
+
     public void shutdown() {
         if (webSocket != null) {
             webSocket.close(1000, "Shutdown");
