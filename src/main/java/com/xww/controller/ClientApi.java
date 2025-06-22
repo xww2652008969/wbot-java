@@ -76,9 +76,6 @@ public class ClientApi {
 
     /**
      * 撤回消息
-     *
-     * @param msgId
-     * @return
      */
     public HttpResult deleteMsg(Long msgId) {
         HashMap<String, String> h = new HashMap<>();

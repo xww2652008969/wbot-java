@@ -14,7 +14,7 @@ public class Bot {
     private final BootConfig config;
     private final WsClient wsClient;
     private final LinkedBlockingQueue<Message> messagesQueue;  //接收的数据队列
-    private PluginControl pluginControl;
+    private final PluginControl pluginControl;
 
     public Bot(BootConfig config) {
         LogUtils.setIsDev(config.isDebug());

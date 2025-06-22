@@ -11,9 +11,9 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
 public class WsClient {
-    private OkHttpClient client;
+    private final OkHttpClient client;
     private WebSocket webSocket;
-    private Request request;
+    private final Request request;
 
     public WsClient(BootConfig config) {
         client = new OkHttpClient.Builder()
