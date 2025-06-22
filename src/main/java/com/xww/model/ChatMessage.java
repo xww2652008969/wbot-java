@@ -5,7 +5,6 @@ import com.xww.constants.MessageType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,7 +22,7 @@ public class ChatMessage {
 
     public ChatMessage(long groupId, long userid) {
         this.groupId = groupId;
-        userId = groupId;
+        userId = userid;
         message = new ArrayList<>();
     }
 

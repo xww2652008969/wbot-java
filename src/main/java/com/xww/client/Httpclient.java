@@ -1,11 +1,9 @@
 package com.xww.client;
 
+import com.alibaba.fastjson2.JSON;
 import com.xww.core.BootConfig;
-import okhttp3.MediaType;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.RequestBody;
-import okhttp3.Response;
+import com.xww.model.HttpResult;
+import okhttp3.*;
 
 import java.io.IOException;
 
@@ -18,7 +16,7 @@ public class Httpclient {
         this.config = config;
     }
 
-    public Response post(String path, String data) {
+    public HttpResult post(String path, String data) {
         Request.Builder b = new Request.Builder();
         if (this.config.getHttpToken() != null) {
             config.getHttpUrl();
@@ -30,7 +28,18 @@ public class Httpclient {
                 .build();
 
         try {
-            return client.newCall(request).execute();
+            var response = client.newCall(request).execute();
+            if (!response.isSuccessful()) {
+                throw new IOException("请求失败，状态码：" + response.code());
+            }
+            ResponseBody responseBody = response.body();
+            if (responseBody == null) {
+                throw new IOException("响应体为空");
+            }
+            String json = responseBody.string();
+            HttpResult httpResult = JSON.parseObject(json, HttpResult.class);
+            return httpResult;
+            
         } catch (IOException e) {
             throw new RuntimeException("HTTP 请求失败: " + e.getMessage(), e);
         }

@@ -2,8 +2,6 @@ package com.xww.PluginManager;
 
 import com.xww.core.BasePlugins;
 import com.xww.model.BotPlugin;
-import com.xww.model.Plugins;
-import lombok.extern.slf4j.Slf4j;
 
 import java.io.File;
 import java.io.IOException;
@@ -33,10 +31,8 @@ public class PluginScanner {
                 URL resource = resources.nextElement();
                 String protocol = resource.getProtocol();
                 if ("file".equals(protocol)) {
-                    // 处理文件系统中的类路径目录（如 target/classes、src/main/resources）
                     pluginClasses.addAll(scanFileSystemClasspath(resource.getFile()));
                 } else if ("jar".equals(protocol)) {
-                    // 处理 JAR 文件中的类
                     pluginClasses.addAll(scanJarFile(resource));
                 }
             }
@@ -82,11 +78,9 @@ public class PluginScanner {
 
         for (File file : files) {
             if (file.isDirectory()) {
-                // 子目录：拼接包路径（如 "com/example/plugins"）
                 String subPackage = currentPackage.isEmpty() ? file.getName() : currentPackage + "." + file.getName();
                 scanDirectoryForClasses(file, subPackage, classes);
             } else if (file.getName().endsWith(".class")) {
-                // 提取类名（去掉 .class 后缀，拼接包路径）
                 String className = currentPackage.isEmpty()
                         ? file.getName().substring(0, file.getName().length() - 6)
                         : currentPackage + "." + file.getName().substring(0, file.getName().length() - 6);
@@ -98,7 +92,6 @@ public class PluginScanner {
                         classes.add(botPluginClass);
                     }
                 } catch (ClassNotFoundException | NoClassDefFoundError e) {
-                    // 忽略无法加载的类（如依赖缺失）
                     System.err.println("警告：无法加载类 " + className + "，原因：" + e.getMessage());
                 }
             }
@@ -118,10 +111,7 @@ public class PluginScanner {
             while (entries.hasMoreElements()) {
                 JarEntry entry = entries.nextElement();
                 String entryName = entry.getName();
-
-                // 过滤非 .class 文件
                 if (entryName.endsWith(".class")) {
-                    // 转换为类名（去掉 .class 后缀，替换 / 为 .）
                     String className = entryName
                             .substring(0, entryName.length() - 6)
                             .replace('/', '.');

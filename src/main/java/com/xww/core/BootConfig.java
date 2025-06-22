@@ -8,4 +8,5 @@ public class BootConfig {
     private String wsToken;
     private String httpUrl;
     private String httpToken;
+    private boolean debug;
 }

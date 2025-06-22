@@ -1,27 +1,25 @@
-package com.xww.event;
+package com.xww.core;
 
+import com.xww.PluginManager.PluginControl;
 import com.xww.constants.EventKind;
-import com.xww.core.BasePlugins;
 import com.xww.model.Message;
-import com.xww.model.Plugins;
-import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 import java.util.concurrent.*;
 
-@Slf4j
 public class Event {
-    private static Set<BasePlugins> plugins;
-    private static final ExecutorService PLUGIN_EXECUTOR = Executors.newFixedThreadPool(
-            Runtime.getRuntime().availableProcessors() * 2,
-            r -> new Thread(r, "Plugin-Executor-" + r.hashCode())
-    );
-    private static final ScheduledExecutorService SCHEDULER = Executors.newScheduledThreadPool(10);
 
-    public static void postEvent(Set<BasePlugins> plugins, LinkedBlockingQueue<Message> messages) {
-        Event.plugins = plugins;
+    private static PluginControl pluginControl;
+
+    public static void postEvent(PluginControl control, LinkedBlockingQueue<Message> messages) {
+        pluginControl = control;
+        for (BasePlugins plugin : control.getPlugins()) {
+            Future<?> submit = control.getPluginPushExecutor().submit(() -> {
+                plugin.push();
+            });
+            control.getPluginPushFuture().put(plugin.getClass().getName(), submit);
+        }
         for (; ; ) {
             try {
                 Message message = messages.take();
@@ -52,8 +50,10 @@ public class Event {
     private static void sendEvent(Message message, EventKind eventKind) {
         int timeoutSeconds = 10000;
         List<Future<?>> futures = new ArrayList<>();
-        for (Plugins plugin : plugins) {
-            Future<?> future = PLUGIN_EXECUTOR.submit(() -> {
+        for (BasePlugins plugin : pluginControl.getPlugins()) {
+            if (!plugin.isOpen())
+                continue;
+            Future<?> future = pluginControl.getPluginEventExecutor().submit(() -> {
                 switch (eventKind) {
                     case MessageSend -> plugin.messageSendHandle(message);
                     case GroupMessage -> plugin.groupHandle(message);
@@ -64,7 +64,7 @@ public class Event {
             futures.add(future);
         }
         // 启动超时监控任务（后台执行，不阻塞主线程）
-        SCHEDULER.schedule(() -> {
+        pluginControl.getSCHEDULER().schedule(() -> {
             cancelPendingTasks(futures); // 超时后取消未完成的任务
         }, timeoutSeconds, TimeUnit.SECONDS);
     }
